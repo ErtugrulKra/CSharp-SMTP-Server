@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -180,7 +180,7 @@ namespace CSharp_SMTP_Server.Networking
 		{
 			if (!_greetSent)
 				return;
-
+			 
 			switch (CaptureData)
 			{
 				case 1:
@@ -188,8 +188,10 @@ namespace CSharp_SMTP_Server.Networking
 					return;
 
 				case 2:
+					
 				case 3:
 				case 4:
+					
 					await AuthenticationCommands.ProcessData(this, response.Trim());
 					return;
 			}

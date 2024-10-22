@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using CSharp_SMTP_Server.Networking;
 
@@ -20,12 +20,13 @@ namespace CSharp_SMTP_Server.Protocol.Commands
 				return;
 			}
 
-			var args = data.Contains(' ', StringComparison.Ordinal) ? data.Split(' ') : new[] {data};
+			var args = data.Contains(' ', StringComparison.Ordinal) ? data.Split(' ') : new[] { data };
 
 			switch (args[0].ToUpper())
 			{
 				case "LOGIN":
 					processor.CaptureData = 2;
+					processor.TempUsername = await AuthUser(processor, args[1]);
 					await processor.WriteText("334 VXNlcm5hbWU6");
 					break;
 
@@ -55,7 +56,7 @@ namespace CSharp_SMTP_Server.Protocol.Commands
 			switch (processor.CaptureData)
 			{
 				case 2:
-					processor.TempUsername = Misc.Base64.Base64Decode(data);
+					processor.TempUsername = string.IsNullOrEmpty(processor.TempUsername) ? Misc.Base64.Base64Decode(data) : processor.TempUsername;
 					processor.CaptureData = 3;
 					await processor.WriteText("334 UGFzc3dvcmQ6");
 					break;
@@ -102,6 +103,15 @@ namespace CSharp_SMTP_Server.Protocol.Commands
 				processor.Secure)
 				? split[1]
 				: null;
+		}
+
+		private static async Task<string?> AuthUser(ClientProcessor processor, string input)
+		{
+			var auth = Misc.Base64.Base64Decode(input);
+			if (auth == null)
+				return null;
+
+			return auth;
 		}
 	}
 }
