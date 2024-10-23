@@ -16,7 +16,7 @@ namespace CSharp_SMTP_Server.Networking
 {
 	internal class ClientProcessor : IDisposable
 	{
-		private static readonly LingerOption Reset = new (true, 0);
+		private static readonly LingerOption Reset = new(true, 0);
 
 		internal ClientProcessor(TcpClient c, Listener l, bool secure)
 		{
@@ -180,7 +180,7 @@ namespace CSharp_SMTP_Server.Networking
 		{
 			if (!_greetSent)
 				return;
-			 
+
 			switch (CaptureData)
 			{
 				case 1:
@@ -188,16 +188,15 @@ namespace CSharp_SMTP_Server.Networking
 					return;
 
 				case 2:
-					
 				case 3:
 				case 4:
-					
+
 					await AuthenticationCommands.ProcessData(this, response.Trim());
 					return;
 			}
 
 			response = response.Trim();
-
+			 
 			string command;
 			var data = string.Empty;
 
